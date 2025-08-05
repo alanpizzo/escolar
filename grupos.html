@@ -22,7 +22,7 @@
   </div>
 
   <h2>Grupos Formados</h2>
-<div id="grupos" class="grupos-formados"></div>
+  <div id="grupos" class="grupos-formados"></div>
 
   <script>
     const planilhaID = "1feQLvKJRltiWcWAkd8TG1K1EUWudwR5vXOGc6sJz3sk";
@@ -73,7 +73,11 @@
         const div = document.createElement("div");
         div.className = "grupo";
         div.style.borderLeftColor = cores[index % cores.length];
-        div.innerHTML = `<strong>Grupo ${index + 1}:</strong>${grupo.join("<br>")}`;
+
+        const titulo = `<strong>Grupo ${index + 1}:</strong>`;
+        const lista = grupo.map(nome => `<li>${nome}</li>`).join("");
+        div.innerHTML = `${titulo}<ul>${lista}</ul>`;
+
         container.appendChild(div);
       });
     }

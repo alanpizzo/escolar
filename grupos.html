@@ -2,43 +2,76 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Formação de Grupos</title>
+  <title>Sorteador de Grupos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
       margin: 20px;
       padding: 10px;
-      max-width: 600px;
+      max-width: 900px;
     }
+
     h1, h2 {
-      color: #333;
+      color: #ffffff;
     }
+
     select, input, button {
       font-size: 16px;
-      padding: 8px;
+      padding: 10px;
       margin: 10px 0;
       width: 100%;
+      border-radius: 4px;
+      border: none;
     }
+
+    input, select {
+      background-color: #2a2a2a;
+      color: #ffffff;
+    }
+
     button {
       background-color: #4CAF50;
       color: white;
-      border: none;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #45a049;
     }
+
+    #grupos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
     .grupo {
-      background-color: #f9f9f9;
-      padding: 10px;
-      margin-top: 10px;
-      border-left: 4px solid #4CAF50;
+      flex: 1 1 calc(50% - 15px);
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #2e2e2e;
+      border-left: 6px solid;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+
+    .grupo strong {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .grupo {
+        flex: 1 1 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Formação de Grupos</h1>
+  <h1>Sorteador de Grupos</h1>
 
   <label for="turma">Escolha a turma:</label>
   <select id="turma">
@@ -58,6 +91,12 @@
   <script>
     const planilhaID = "1feQLvKJRltiWcWAkd8TG1K1EUWudwR5vXOGc6sJz3sk";
 
+    // Paleta de cores variadas para grupos
+    const cores = [
+      "#FF6B6B", "#6BCB77", "#4D96FF", "#F7B801", "#9D4EDD",
+      "#00B8A9", "#F45B69", "#0081A7", "#F07167", "#6A4C93"
+    ];
+
     function gerarGrupos() {
       const turma = document.getElementById("turma").value.trim();
       const tamanhoGrupo = parseInt(document.getElementById("tamanho").value);
@@ -75,7 +114,7 @@
           const json = JSON.parse(data.substr(47).slice(0, -2));
           const rows = json.table.rows;
 
-          const alunos = rows.map(row => row.c[1]?.v).filter(nome => !!nome); // Coluna B = Nome
+          const alunos = rows.map(row => row.c[1]?.v).filter(nome => !!nome);
 
           embaralhar(alunos);
           const grupos = [];
@@ -98,7 +137,8 @@
       grupos.forEach((grupo, index) => {
         const div = document.createElement("div");
         div.className = "grupo";
-        div.innerHTML = `<strong>Grupo ${index + 1}:</strong><br>${grupo.join("<br>")}`;
+        div.style.borderLeftColor = cores[index % cores.length]; // cor variada
+        div.innerHTML = `<strong>Grupo ${index + 1}:</strong>${grupo.join("<br>")}`;
         container.appendChild(div);
       });
     }

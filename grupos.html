@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Formação de Grupos</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    select, input, button { margin: 10px 0; }
+    .grupo { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+  <h1>Formação de Grupos</h1>
+
+  <label for="turma">Escolha a turma:</label>
+  <select id="turma">
+    <option value="Turma A">Turma A</option>
+    <option value="Turma B">Turma B</option>
+    <option value="Turma C">Turma C</option>
+  </select><br>
+
+  <label for="tamanho">Tamanho do grupo (2 a 8):</label>
+  <input type="number" id="tamanho" min="2" max="8" value="4"><br>
+
+  <button onclick="gerarGrupos()">Gerar Grupos</button>
+
+  <h2>Grupos Formados</h2>
+  <div id="grupos"></div>
+
+  <script>
+    const planilhaID = "1feQLvKJRltiWcWAkd8TG1K1EUWudwR5vXOGc6sJz3sk";
+
+    function gerarGrupos() {
+      const turma = document.getElementById("turma").value;
+      const tamanhoGrupo = parseInt(document.getElementById("tamanho").value);
+
+      if (isNaN(tamanhoGrupo) || tamanhoGrupo < 2 || tamanhoGrupo > 8) {
+        alert("Escolha um tamanho entre 2 e 8 alunos.");
+        return;
+      }
+
+      const url = `https://docs.google.com/spreadsheets/d/${planilhaID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(turma)}`;
+
+      fetch(url)
+        .then(res => res.text())
+        .then(data => {
+          const json = JSON.parse(data.substr(47).slice(0, -2));
+          const rows = json.table.rows;
+
+          const alunos = rows.map(row => row.c[1]?.v).filter(nome => !!nome); // Coluna B = Nome
+
+          embaralhar(alunos);
+          const grupos = [];
+          for (let i = 0; i < alunos.length; i += tamanhoGrupo) {
+            grupos.push(alunos.slice(i, i + tamanhoGrupo));
+          }
+
+          exibirGrupos(grupos);
+        })
+        .catch(() => alert("Erro ao carregar os dados. Verifique se a aba da turma está correta e pública."));
+    }
+
+    function exibirGrupos(grupos) {
+      const container = document.getElementById("grupos");
+      container.innerHTML = "";
+
+      grupos.forEach((grupo, index) => {
+        const div = document.createElement("div");
+        div.className = "grupo";
+        div.innerHTML = `<strong>Grupo ${index + 1}:</strong><br>${grupo.join("<br>")}`;
+        container.appendChild(div);
+      });
+    }
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
+</body>
+</html>

@@ -4,23 +4,51 @@
   <meta charset="UTF-8">
   <title>Formação de Grupos</title>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    select, input, button { margin: 10px 0; }
-    .grupo { margin-bottom: 15px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 10px;
+      max-width: 600px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    select, input, button {
+      font-size: 16px;
+      padding: 8px;
+      margin: 10px 0;
+      width: 100%;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .grupo {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 4px solid #4CAF50;
+    }
   </style>
 </head>
 <body>
+
   <h1>Formação de Grupos</h1>
 
   <label for="turma">Escolha a turma:</label>
   <select id="turma">
-    <option value="Turma A">Turma A</option>
-    <option value="Turma B">Turma B</option>
-    <option value="Turma C">Turma C</option>
-  </select><br>
+    <option value="A">Turma A</option>
+    <option value="B">Turma B</option>
+    <option value="C">Turma C</option>
+  </select>
 
   <label for="tamanho">Tamanho do grupo (2 a 8):</label>
-  <input type="number" id="tamanho" min="2" max="8" value="4"><br>
+  <input type="number" id="tamanho" min="2" max="8" value="4">
 
   <button onclick="gerarGrupos()">Gerar Grupos</button>
 
@@ -31,7 +59,7 @@
     const planilhaID = "1feQLvKJRltiWcWAkd8TG1K1EUWudwR5vXOGc6sJz3sk";
 
     function gerarGrupos() {
-      const turma = document.getElementById("turma").value;
+      const turma = document.getElementById("turma").value.trim();
       const tamanhoGrupo = parseInt(document.getElementById("tamanho").value);
 
       if (isNaN(tamanhoGrupo) || tamanhoGrupo < 2 || tamanhoGrupo > 8) {
@@ -57,7 +85,10 @@
 
           exibirGrupos(grupos);
         })
-        .catch(() => alert("Erro ao carregar os dados. Verifique se a aba da turma está correta e pública."));
+        .catch((error) => {
+          console.error("Erro ao buscar dados:", error);
+          alert("Erro ao carregar os dados. Verifique se a aba da turma está correta e pública.");
+        });
     }
 
     function exibirGrupos(grupos) {
@@ -79,5 +110,6 @@
       }
     }
   </script>
+
 </body>
 </html>
